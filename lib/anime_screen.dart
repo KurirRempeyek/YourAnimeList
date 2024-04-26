@@ -21,8 +21,6 @@ class _AnimeScreenState extends State<AnimeScreen> {
   late String _status;
   late int _progress;
   late double _score;
-  late DateTime _startDate;
-  late DateTime _endDate;
 
   @override
   void initState() {
@@ -32,8 +30,6 @@ class _AnimeScreenState extends State<AnimeScreen> {
     _status = 'Watching';
     _progress = 0;
     _score = 0.0;
-    _startDate = DateTime.now();
-    _endDate = DateTime.now();
   }
 
   @override
@@ -71,15 +67,17 @@ class _AnimeScreenState extends State<AnimeScreen> {
   void createOrUpdateAnime() {
     _formStateKey.currentState?.save();
     if (!isUpdate) {
-      dbHelper.add(Anime(
-          null, _title, _status, _progress, _score, _startDate, _endDate));
+      dbHelper.add(Anime(null, _title, _status, _progress, _score)).then((_) {
+        refreshAnimeLists();
+      });
     } else {
-      dbHelper.update(Anime(animeIdForUpdate, _title, _status, _progress,
-          _score, _startDate, _endDate));
+      dbHelper
+          .update(Anime(animeIdForUpdate, _title, _status, _progress, _score))
+          .then((_) {
+        refreshAnimeLists();
+      });
     }
     _animeTitleController.text = '';
-    refreshAnimeLists();
-    setState(() {});
   }
 
   void editFormAnime(BuildContext context, Anime anime) {
@@ -90,19 +88,18 @@ class _AnimeScreenState extends State<AnimeScreen> {
       _status = anime.status;
       _progress = anime.progress;
       _score = anime.score ?? 0.0;
-      _startDate = anime.startDate ?? DateTime.now();
-      _endDate = anime.endDate ?? DateTime.now();
     });
     _animeTitleController.text = anime.title;
   }
 
   void deleteAnime(BuildContext context, int animeID) {
-    setState(() {
-      isUpdate = false;
+    //setState(() {
+    //isUpdate = false;
+    //});
+    //_animeTitleController.text = '';
+    dbHelper.delete(animeID).then((_) {
+      refreshAnimeLists();
     });
-    _animeTitleController.text = '';
-    dbHelper.delete(animeID);
-    refreshAnimeLists();
   }
 
   @override
@@ -181,59 +178,6 @@ class _AnimeScreenState extends State<AnimeScreen> {
                               icon: Icon(Icons.star),
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () async {
-                              final DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: _startDate,
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100),
-                              );
-                              if (pickedDate != null &&
-                                  pickedDate != _startDate) {
-                                setState(() {
-                                  _startDate = pickedDate;
-                                });
-                              }
-                            },
-                            child: AbsorbPointer(
-                              child: TextFormField(
-                                controller: TextEditingController(
-                                  text: _startDate.toString().split(' ')[0],
-                                ),
-                                decoration: const InputDecoration(
-                                  labelText: 'Start Date',
-                                  icon: Icon(Icons.calendar_today),
-                                ),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              final DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: _endDate,
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100),
-                              );
-                              if (pickedDate != null &&
-                                  pickedDate != _endDate) {
-                                setState(() {
-                                  _endDate = pickedDate;
-                                });
-                              }
-                            },
-                            child: AbsorbPointer(
-                              child: TextFormField(
-                                controller: TextEditingController(
-                                    text: _endDate.toString().split(' ')[0]),
-                                decoration: const InputDecoration(
-                                  labelText: 'End Date',
-                                  icon: Icon(Icons.calendar_today),
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -277,6 +221,8 @@ class _AnimeScreenState extends State<AnimeScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(child: Text('No Data'));
                     } else {
@@ -322,21 +268,10 @@ class _AnimeScreenState extends State<AnimeScreen> {
         child: ListTile(
           title: Text(anime[index].title),
           subtitle: Text(
-            'Status: ${anime[index].status}, Progress: ${anime[index].progress}, Score: ${anime[index].score ?? 'N/A'}, Start Date: ${_formatDateTime(anime[index].startDate) ?? 'N/A'}, End Date: ${_formatDateTime(anime[index].endDate) ?? 'N/A'}',
+            'Status: ${anime[index].status}, Progress: ${anime[index].progress}, Score: ${anime[index].score ?? 'N/A'}}',
           ),
         ),
       ),
     );
-  }
-
-  String? _formatDateTime(DateTime? dateTime) {
-    return dateTime != null
-        ? '${dateTime.year}-${_twoDigits(dateTime.month)}-${_twoDigits(dateTime.hour)}:${_twoDigits(dateTime.minute)}'
-        : null;
-  }
-
-  String _twoDigits(int n) {
-    if (n >= 10) return '$n';
-    return '0$n';
   }
 }

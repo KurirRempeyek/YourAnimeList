@@ -4,11 +4,8 @@ class Anime {
   late String status;
   late int progress;
   late double? score;
-  late DateTime? startDate;
-  late DateTime? endDate;
 
-  Anime(this.id, this.title, this.status, this.progress, this.score,
-      this.startDate, this.endDate);
+  Anime(this.id, this.title, this.status, this.progress, this.score);
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -17,8 +14,6 @@ class Anime {
       'status': status,
       'progress': progress,
       'score': score,
-      'start_date': startDate,
-      'end_date': endDate,
     };
     return map;
   }
@@ -29,7 +24,5 @@ class Anime {
     status = map['status'];
     progress = map['progress'];
     score = map['score'];
-    startDate = map['start_date'];
-    endDate = map['end_date'];
   }
 }
