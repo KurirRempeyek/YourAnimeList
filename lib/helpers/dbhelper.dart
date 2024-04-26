@@ -26,7 +26,8 @@ class DBHelper {
   }
 
   _onCreate(Database db, int version) async {
-    await db.execute('CREATE TABLE anime (id INTEGER PRIMARY KEY, title TEXT)');
+    await db.execute(
+        'CREATE TABLE anime (id INTEGER PRIMARY KEY, title TEXT, status TEXT, progress INTEGER, score REAL, startDate TEXT, endDate TEXT)');
   }
 
   Future<Anime> add(Anime anime) async {
