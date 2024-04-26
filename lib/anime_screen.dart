@@ -79,6 +79,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
     }
     _animeTitleController.text = '';
     refreshAnimeLists();
+    setState(() {});
   }
 
   void editFormAnime(BuildContext context, Anime anime) {
@@ -126,7 +127,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
     );
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
