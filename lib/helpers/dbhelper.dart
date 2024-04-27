@@ -21,19 +21,12 @@ class DBHelper {
   initDatabase() async {
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, 'db_anime.db');
-    var db = await openDatabase(path, version: 2, onCreate: _onCreate);
+    var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
   }
 
   _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE anime (
-        id INTEGER PRIMARY KEY, 
-        title TEXT, 
-        status TEXT, -- Add the status column
-        progress INTEGER, 
-        score REAL)
-    ''');
+    await db.execute('CREATE TABLE anime (id INTEGER PRIMARY KEY, title TEXT)');
   }
 
   Future<Anime> add(Anime anime) async {

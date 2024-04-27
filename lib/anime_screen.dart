@@ -18,18 +18,12 @@ class _AnimeScreenState extends State<AnimeScreen> {
   late int? animeIdForUpdate;
   late DBHelper dbHelper;
   final _animeTitleController = TextEditingController();
-  late String _status;
-  late int _progress;
-  late double _score;
 
   @override
   void initState() {
     super.initState();
     dbHelper = DBHelper();
     refreshAnimeLists();
-    _status = 'Watching';
-    _progress = 0;
-    _score = 0.0;
   }
 
   @override
@@ -67,39 +61,29 @@ class _AnimeScreenState extends State<AnimeScreen> {
   void createOrUpdateAnime() {
     _formStateKey.currentState?.save();
     if (!isUpdate) {
-      dbHelper.add(Anime(null, _title, _status, _progress, _score)).then((_) {
-        refreshAnimeLists();
-      });
+      dbHelper.add(Anime(null, _title));
     } else {
-      dbHelper
-          .update(Anime(animeIdForUpdate, _title, _status, _progress, _score))
-          .then((_) {
-        refreshAnimeLists();
-      });
+      dbHelper.update(Anime(animeIdForUpdate, _title));
     }
     _animeTitleController.text = '';
+    refreshAnimeLists();
   }
 
   void editFormAnime(BuildContext context, Anime anime) {
     setState(() {
       isUpdate = true;
       animeIdForUpdate = anime.id!;
-      _title = anime.title;
-      _status = anime.status;
-      _progress = anime.progress;
-      _score = anime.score ?? 0.0;
     });
     _animeTitleController.text = anime.title;
   }
 
   void deleteAnime(BuildContext context, int animeID) {
-    //setState(() {
-    //isUpdate = false;
-    //});
-    //_animeTitleController.text = '';
-    dbHelper.delete(animeID).then((_) {
-      refreshAnimeLists();
+    setState(() {
+      isUpdate = false;
     });
+    _animeTitleController.text = '';
+    dbHelper.delete(animeID);
+    refreshAnimeLists();
   }
 
   @override
@@ -123,117 +107,65 @@ class _AnimeScreenState extends State<AnimeScreen> {
               TextStyle(color: !isUpdate ? Colors.purple : Colors.blue)),
     );
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+      body: Column(
+        //height: MediaQuery.of(context).size.height,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Form(
+            key: _formStateKey,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: textFormField,
+                ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Form(
-                key: _formStateKey,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          textFormField,
-                          DropdownButtonFormField<String>(
-                            value: _status,
-                            onChanged: (value) {
-                              setState(() {
-                                _status = value!;
-                              });
-                            },
-                            items: ['Watching', 'Completed', 'Plan to Watch']
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            decoration: const InputDecoration(
-                              labelText: 'Status',
-                              icon: Icon(Icons.info),
-                            ),
-                          ),
-                          TextFormField(
-                            onSaved: (value) {
-                              _progress = int.parse(value!);
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: "Episode Progress",
-                              icon: Icon(Icons.play_arrow),
-                            ),
-                          ),
-                          TextFormField(
-                            onSaved: (value) {
-                              _score = double.parse(value!);
-                            },
-                            keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true),
-                            decoration: const InputDecoration(
-                              labelText: 'Score',
-                              icon: Icon(Icons.star),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        createOrUpdateAnime();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: !isUpdate
-                            ? Colors.purple
-                            : Colors.blue, // Set background color
-                        foregroundColor: Colors.white,
-                      ),
-                      child: !isUpdate
-                          ? const Text('Save')
-                          : const Text('Update')),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        cancelTextEditing();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange, // Set background color
-                        foregroundColor: Colors.white,
-                      ),
-                      child: const Text('Cancel')),
-                ],
-              ),
-              const Divider(),
-              Expanded(
-                child: FutureBuilder(
-                  future: anime,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No Data'));
-                    } else {
-                      return generateList(snapshot.data!);
-                    }
+              ElevatedButton(
+                  onPressed: () {
+                    createOrUpdateAnime();
                   },
-                ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: !isUpdate
+                        ? Colors.purple
+                        : Colors.blue, // Set background color
+                    foregroundColor: Colors.white,
+                  ),
+                  child: !isUpdate ? const Text('Save') : const Text('Update')),
+              const SizedBox(
+                width: 10,
               ),
+              ElevatedButton(
+                  onPressed: () {
+                    cancelTextEditing();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange, // Set background color
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Cancel')),
             ],
           ),
-        ),
+          const Divider(),
+          Expanded(
+            child: FutureBuilder(
+              future: anime,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Text('No Data');
+                }
+                if (snapshot.hasData) {
+                  return generateList(snapshot.data!);
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -267,9 +199,6 @@ class _AnimeScreenState extends State<AnimeScreen> {
         ), // Assuming each anime has a unique id
         child: ListTile(
           title: Text(anime[index].title),
-          subtitle: Text(
-            'Status: ${anime[index].status}, Progress: ${anime[index].progress}, Score: ${anime[index].score ?? 'N/A'}}',
-          ),
         ),
       ),
     );
