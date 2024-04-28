@@ -29,7 +29,12 @@ class _DatasScreenState extends State<DatasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Data List'),
+        title: Text(
+          'Data List',
+          style: GoogleFonts.poppins(fontSize: 25),
+        ),
+        backgroundColor: const Color.fromARGB(255, 103, 80, 164),
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons
               .arrow_back), // Customize icon (optional)// Customize color (optional)
@@ -81,7 +86,7 @@ class _DatasScreenState extends State<DatasScreen> {
                           onPressed: () {
                             _showDeleteConfirmationDialog(context, item);
                           },
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                         ),
                         IconButton(
                           onPressed: () {
@@ -91,7 +96,7 @@ class _DatasScreenState extends State<DatasScreen> {
                                     builder: (context) =>
                                         EditScreen(object: item)));
                           },
-                          icon: Icon(Icons.edit),
+                          icon: const Icon(Icons.edit),
                         ),
                       ],
                     )
@@ -123,12 +128,12 @@ class _DatasScreenState extends State<DatasScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Confirmation'),
+          title: const Text('Delete Confirmation'),
           content: Text('Are you sure you want to delete ${datas.name}?'),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -138,7 +143,7 @@ class _DatasScreenState extends State<DatasScreen> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );

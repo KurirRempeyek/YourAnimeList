@@ -1,8 +1,5 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -110,8 +107,8 @@ class _EditScreenState extends State<EditScreen> {
       //hande response success/error
       if (response.statusCode == 201) {
         debugPrint('Data and image posted successfully');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => DatasScreen()));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const DatasScreen()));
       } else {
         debugPrint('Error: ${response.statusCode}');
       }
@@ -121,14 +118,14 @@ class _EditScreenState extends State<EditScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade900,
+      backgroundColor: Colors.yellow.shade900,
       appBar: AppBar(
         title: null,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +136,7 @@ class _EditScreenState extends State<EditScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Create datas",
+                    "Edit datas",
                     style: GoogleFonts.poppins(
                       fontSize: 32,
                       color: Colors.white,
