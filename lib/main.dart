@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:prototyping/CustomerService_screen.dart';
 import 'package:prototyping/anime_screen.dart';
 import 'package:prototyping/animedesc.dart/hanakokun.dart';
 import 'package:prototyping/animedesc.dart/hataraku.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/ponyo': (context) => const Ponyo(),
         '/form-screen': (context) => const FormScreen(),
         '/datas-screen': (context) => const DatasScreen(),
+        '/customerservice-screen': (context) => const CustomerService(),
       },
     );
   }
@@ -61,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const NewsScreen(),
     const AnimeScreen(),
     const DatasScreen(),
+    const CustomerService(),
   ];
 
   final List<String> _appBarTitles = const [
@@ -69,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'News',
     'MyList',
     'Datas Screen',
+    'Customer Service',
   ]; // List of titles corresponding to each screen
 
   void _onItemTapped(int index) {
@@ -83,8 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     Navigator.pushNamed(context, routeName);
   }
-  //yhyhy
-  //hdhdhd
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +153,16 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 // Update the state of the app
                 _onItemTapped(4);
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Customer Service'),
+              selected: _selectedIndex == 1,
+              onTap: () {
+                // Update the state of the app
+                _onItemTapped(5);
                 // Then close the drawer
                 Navigator.pop(context);
               },
