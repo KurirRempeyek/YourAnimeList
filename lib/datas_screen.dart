@@ -7,6 +7,7 @@ import 'package:prototyping/dto/datas.dart';
 import 'package:prototyping/endpoints/endpoints.dart';
 import 'package:prototyping/form_screen.dart';
 import 'package:prototyping/services/data_services.dart';
+import 'package:prototyping/update_delete_datas.dart';
 
 class DatasScreen extends StatefulWidget {
   const DatasScreen({Key? key}) : super(key: key);
@@ -73,7 +74,27 @@ class _DatasScreenState extends State<DatasScreen> {
                           color: const Color.fromARGB(255, 36, 31, 31),
                           fontWeight: FontWeight.normal,
                         )),
-                    const Divider()
+                    const Divider(),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            _showDeleteConfirmationDialog(context, item);
+                          },
+                          icon: Icon(Icons.delete),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditScreen(object: item)));
+                          },
+                          icon: Icon(Icons.edit),
+                        ),
+                      ],
+                    )
                   ]),
                 );
               },
@@ -94,6 +115,34 @@ class _DatasScreenState extends State<DatasScreen> {
         },
         child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, Datas datas) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Confirmation'),
+          content: Text('Are you sure you want to delete ${datas.name}?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                DataService.deleteDatas(datas.idDatas);
+                setState(() {
+                  _datas = DataService.fetchDatas();
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

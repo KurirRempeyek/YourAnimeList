@@ -17,6 +17,16 @@ class DataService {
     }
   }
 
+  static Future<void> sendNews(String title, String body) async {
+    Map<String, String> newsData = {
+      "title": title,
+      "body": body,
+    };
+    String jsonData = jsonEncode(newsData);
+    await http.post(Uri.parse(Endpoints.news),
+        body: jsonData, headers: {'Content-Type': 'application/json'});
+  }
+
   static Future<List<Datas>> fetchDatas() async {
     final response = await http.get(Uri.parse(Endpoints.datas));
     if (response.statusCode == 200) {
@@ -28,6 +38,18 @@ class DataService {
       // Handle error
       throw Exception('Failed to load data');
     }
+  }
+
+  static Future<void> deleteDatas(int id) async {
+    await http.delete(Uri.parse('${Endpoints.datas}/$id'),
+        headers: {'Content-type': 'aplication/json'});
+  }
+
+  static Future<void> updateDatas(String id, String title, String body) async {
+    Map<String, String> data = {"id": id, "title": title, "body": body};
+    String jsonData = jsonEncode(data);
+    await http.put(Uri.parse('${Endpoints.datas}/$id'),
+        body: jsonData, headers: {'Content-type': 'application/json'});
   }
 
   // post data to endpoint news
