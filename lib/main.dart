@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:prototyping/CustomerService_screen.dart';
 import 'package:prototyping/anime_screen.dart';
 import 'package:prototyping/animedesc.dart/hanakokun.dart';
 import 'package:prototyping/animedesc.dart/hataraku.dart';
@@ -11,6 +10,7 @@ import 'package:prototyping/datas_screen.dart';
 import 'package:prototyping/form_screen.dart';
 import 'package:prototyping/homepage.dart';
 import 'package:prototyping/discover.dart';
+import 'package:prototyping/issue_list_screen.dart';
 import 'package:prototyping/news_screen.dart';
 import 'package:prototyping/animedesc.dart/aikatsu.dart';
 
