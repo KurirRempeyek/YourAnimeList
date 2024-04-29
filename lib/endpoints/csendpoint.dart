@@ -1,6 +1,5 @@
 class Endpoints {
-  static const String baseURL =
-      "https://schema.getpostman.com/json/collection/v2.1.0/collection.json";
-
-  static const String issue = "$baseURL/api/issue";
+  static const String baseURLuts = 'https://simobile.singapoly.com';
+  static const String issue = "$baseURLuts/api/customer-service";
+  //static const String NIM = "$issue/2215091010";
 }

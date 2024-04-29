@@ -6,7 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:prototyping/dto/issue.dart';
 
 class EditCS extends StatefulWidget {
-  const EditCS({Key? key, required this.obyek}) : super(key: key);
+  const EditCS({Key? key, required this.obyek, required Issue issue})
+      : super(key: key);
 
   final Issue obyek;
 

@@ -8,7 +8,7 @@ class IssueDataService {
     final response = await http.get(Uri.parse(Endpoints.issue));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-      return (data['Issue'] as List<dynamic>)
+      return (data['issue'] as List<dynamic>)
           .map((item) => Issue.fromJson(item as Map<String, dynamic>))
           .toList();
     } else {

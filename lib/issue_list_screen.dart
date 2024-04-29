@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prototyping/components/bottom_up_transition.dart';
 import 'package:prototyping/dto/issue.dart';
-import 'package:prototyping/edit_cs.dart';
+//import 'package:prototyping/edit_cs.dart';
 import 'package:prototyping/endpoints/csendpoint.dart';
 import 'package:prototyping/form_customerservice.dart';
 import 'package:prototyping/services/issue_data_service.dart';
@@ -51,22 +51,19 @@ class _CustomerServiceState extends State<CustomerService> {
               itemBuilder: (context, index) {
                 final item = data[index];
                 return ListTile(
-                  // ignore: unnecessary_null_comparison
-                  title: item.imageUrl == null
-                      ? Row(
-                          children: [
-                            Image.network(
-                              fit: BoxFit.fitWidth,
-                              width: 350,
-                              Uri.parse(
-                                      '${Endpoints.baseURL}/public/${item.imageUrl}')
-                                  .toString(),
-                              errorBuilder: (context, error, StackTrace) =>
-                                  const Icon(Icons.error),
-                            ),
-                          ],
-                        )
-                      : null,
+                  title: Row(
+                    children: [
+                      Image.network(
+                        fit: BoxFit.fitWidth,
+                        width: 350,
+                        Uri.parse(
+                                '${Endpoints.baseURLuts}/public/${item.imageUrl}')
+                            .toString(),
+                        errorBuilder: (context, error, StackTrace) =>
+                            const Icon(Icons.error),
+                      ),
+                    ],
+                  ),
                   subtitle: Column(children: [
                     Text(
                       'Title: ${item.titleIssues}',
@@ -85,15 +82,15 @@ class _CustomerServiceState extends State<CustomerService> {
                           },
                           icon: const Icon(Icons.delete),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditCS(obyek: item)));
-                          },
-                          icon: const Icon(Icons.edit),
-                        ),
+                        //IconButton(
+                        //onPressed: () {
+                        //Navigator.push(
+                        //  context,
+                        //MaterialPageRoute(
+                        //  builder: (context) => FormCS(obyek: item)));
+                        // },
+                        //icon: const Icon(Icons.edit),
+                        //),
                       ],
                     )
                   ]),
