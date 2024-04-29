@@ -46,6 +46,7 @@ dependencies:
   google_nav_bar: ^5.0.6
   google_fonts: ^6.2.1
   image_picker: ^1.0.8
+  flutter_rating_bar: ^4.0.1
 
 
 dev_dependencies:

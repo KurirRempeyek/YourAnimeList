@@ -1,129 +1,289 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:prototyping/endpoints/endpoints.dart';
 
-class FormCS extends StatefulWidget {
-  const FormCS({super.key});
+class CSForm extends StatefulWidget {
+  const CSForm({Key? key}) : super(key: key);
 
   @override
-  State<FormCS> createState() => _FormCSState();
+  _CSFormState createState() => _CSFormState();
 }
 
-class _FormCSState extends State<FormCS> {
-  final _formKey = GlobalKey<FormState>();
+class _CSFormState extends State<CSForm> {
   final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
   final _ratingController = TextEditingController();
-  File? galleryFile;
+  final _descriptionController = TextEditingController();
 
-  void _pickImage() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        galleryFile = File(pickedImage.path);
-      });
-    }
+  String _title = "";
+  String _description = "";
+  int _rating = 0;
+
+  File? galleryFile;
+  final picker = ImagePicker();
+
+  _showPicker({
+    required BuildContext context,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Photo Library'),
+                onTap: () {
+                  getImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
-  void _submitIssue() {
-    if (_formKey.currentState!.validate()) {
-      //proses submit issue ke server/database
-      print('Title: ${_titleController}');
-      print('Description: ${_descriptionController}');
-      print('Rating: ${_ratingController}');
-      print('Image: ${galleryFile?.path}');
+  Future getImage(
+    ImageSource img,
+  ) async {
+    final pickedFile = await picker.pickImage(source: img);
+    XFile? xfilePick = pickedFile;
+    setState(
+      () {
+        if (xfilePick != null) {
+          galleryFile = File(pickedFile!.path);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Nothing is selected')));
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _ratingController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  saveData() {
+    debugPrint(_title);
+    debugPrint(_description);
+    debugPrint(_rating as String?);
+  }
+
+  Future<void> _postDataWithImage(BuildContext context) async {
+    if (galleryFile == null) {
+      return;
     }
+
+    var request = MultipartRequest('POST', Uri.parse(Endpoints.issue));
+    request.fields['title_issues'] = _titleController.text;
+    request.fields['description_issues'] = _descriptionController.text;
+    request.fields['rating'] = _ratingController.text.toString();
+
+    var multipartFile = await MultipartFile.fromPath(
+      'image',
+      galleryFile!.path,
+    );
+    request.files.add(multipartFile);
+
+    request.send().then((response) {
+      if (response.statusCode == 201) {
+        debugPrint('Data and image posted successfully!');
+        Navigator.of(context).pop();
+      } else {
+        debugPrint('Error posting data: ${response.statusCode}');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.purple.shade900,
       appBar: AppBar(
-        title: Text(
-          'Report Issue',
-          style: GoogleFonts.poppins(fontSize: 25),
-        ),
-        backgroundColor: const Color.fromARGB(255, 103, 80, 164),
-        centerTitle: true,
+        title: null,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Title Issue',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Title can\'t be empty';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 16.0,
-                ),
-                TextFormField(
-                  controller: _descriptionController,
-                  maxLines: 5,
-                  decoration: const InputDecoration(
-                    labelText: 'Description Issue',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Description can\'t be empty';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 16.0,
-                ),
-                TextFormField(
-                  controller: _ratingController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Rating (1-5)',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Rating have to be number 1 to 5';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 16.0,
-                ),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: _pickImage,
-                      child: const Text('Choose Image'),
+      body: Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Create datas",
+                    style: GoogleFonts.poppins(
+                      fontSize: 32,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
                     ),
-                    if (galleryFile != null)
-                      Image.file(galleryFile!, width: 100.0, height: 100.0),
-                  ],
-                ),
-                const SizedBox(
-                  height: 32.0,
-                ),
-                ElevatedButton(
-                  onPressed: _submitIssue,
-                  child: const Text('Report'),
-                ),
-              ],
+                  ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  Text(
+                    "Fill the datas below, make sure you add titles and upload the images",
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(60),
+                        topRight: Radius.circular(60))),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color.fromRGBO(225, 95, 27, .3),
+                                  blurRadius: 20,
+                                  offset: Offset(0, 10))
+                            ]),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _showPicker(context: context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.grey.shade200))),
+                                width: double.infinity,
+                                height: 150,
+                                child: galleryFile == null
+                                    ? Center(
+                                        child: Text('Pick your Image here',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              color: const Color.fromARGB(
+                                                  255, 124, 122, 122),
+                                              fontWeight: FontWeight.w500,
+                                            )))
+                                    : Center(
+                                        child: Image.file(galleryFile!),
+                                      ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Colors.grey.shade200))),
+                              child: TextField(
+                                controller: _titleController,
+                                decoration: const InputDecoration(
+                                    hintText: "Title of Image",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _title = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Colors.grey.shade200))),
+                              child: TextField(
+                                controller: _ratingController,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                    hintText: "Rating",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rating = int.tryParse(value) ?? 0;
+                                  });
+                                },
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Colors.grey.shade200))),
+                              child: TextField(
+                                controller: _descriptionController,
+                                decoration: const InputDecoration(
+                                    hintText: "Description",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _description = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
+        tooltip: 'Increment',
+        onPressed: () {
+          _postDataWithImage(context);
+        },
+        child: const Icon(Icons.save, color: Colors.white, size: 28),
       ),
     );
   }
