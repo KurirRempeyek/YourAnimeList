@@ -16,6 +16,8 @@ class _CSFormState extends State<CSForm> {
   final _titleController = TextEditingController();
   final _ratingController = TextEditingController();
   final _descriptionController = TextEditingController();
+  String? _selectedDivision;
+  String? _selectedPriority;
 
   String _title = "";
   String _description = "";
@@ -265,6 +267,52 @@ class _CSFormState extends State<CSForm> {
                                   });
                                 },
                               ),
+                            ),
+                            DropdownButtonFormField<String>(
+                              decoration: const InputDecoration(
+                                hintText: 'Select Division',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: InputBorder.none,
+                              ),
+                              value: _selectedDivision,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedDivision = newValue!;
+                                });
+                              },
+                              items: <String>[
+                                'IT',
+                                'Helpdesk',
+                                'Billing'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                            DropdownButtonFormField<String>(
+                              decoration: const InputDecoration(
+                                hintText: 'Select Priority',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: InputBorder.none,
+                              ),
+                              value: _selectedPriority,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedPriority = newValue!;
+                                });
+                              },
+                              items: <String>[
+                                'High',
+                                'Medium',
+                                'Low'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
                             ),
                           ],
                         ),
