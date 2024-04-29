@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         '/ponyo': (context) => const Ponyo(),
         '/form-screen': (context) => const FormScreen(),
         '/datas-screen': (context) => const DatasScreen(),
-        '/customerservice-screen': (context) => const CustomerService(),
+        '/customerservice-screen': (context) => const IssueListScreen(),
       },
     );
   }
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const NewsScreen(),
     const AnimeScreen(),
     const DatasScreen(),
-    const CustomerService(),
+    const IssueListScreen(),
   ];
 
   final List<String> _appBarTitles = const [

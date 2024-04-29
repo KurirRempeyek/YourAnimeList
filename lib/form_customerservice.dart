@@ -123,7 +123,7 @@ class _CSFormState extends State<CSForm> {
         elevation: 0.0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

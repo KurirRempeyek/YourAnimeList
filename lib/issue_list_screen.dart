@@ -8,20 +8,20 @@ import 'package:prototyping/endpoints/endpoints.dart';
 import 'package:prototyping/form_customerservice.dart';
 import 'package:prototyping/services/data_services.dart';
 
-class CustomerService extends StatefulWidget {
-  const CustomerService({Key? key}) : super(key: key);
+class IssueListScreen extends StatefulWidget {
+  const IssueListScreen({Key? key}) : super(key: key);
 
   @override
   _CustomerServiceState createState() => _CustomerServiceState();
 }
 
-class _CustomerServiceState extends State<CustomerService> {
+class _CustomerServiceState extends State<IssueListScreen> {
   Future<List<Issue>>? _CustomerService;
 
   @override
   void initState() {
     super.initState();
-    _CustomerService = DataService.fetchIssue();
+    _CustomerService = DataService.fetchCustomerService();
   }
 
   @override
@@ -35,7 +35,7 @@ class _CustomerServiceState extends State<CustomerService> {
           icon: const Icon(Icons
               .arrow_back), // Customize icon (optional)// Customize color (optional)
           onPressed: () {
-            // Your custom back button functionality here
+            //Your custom back button functionality here
             Navigator.pushReplacementNamed(
                 context, '/'); // Default back button behavior
             // You can add additional actions here (e.g., show confirmation dialog)
@@ -112,7 +112,7 @@ class _CustomerServiceState extends State<CustomerService> {
                           onPressed: () {
                             _showDeleteConfirmationDialog(context, item);
                           },
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                         ),
                         // IconButton(
                         //   onPressed: () {
@@ -137,7 +137,7 @@ class _CustomerServiceState extends State<CustomerService> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 54, 40, 176),
+        backgroundColor: const Color.fromARGB(255, 103, 80, 164),
         tooltip: 'Increment',
         onPressed: () {
           // Navigator.pushNamed(context, '/form-screen');
@@ -154,7 +154,7 @@ class _CustomerServiceState extends State<CustomerService> {
     final bool confirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Data'),
+        title: const Text('Delete Data'),
         content:
             Text('Are you sure you want to delete this ${datas.titleIssues}?'),
         actions: [
@@ -163,14 +163,14 @@ class _CustomerServiceState extends State<CustomerService> {
               // Tidak jadi menghapus, kembali dengan nilai false
               Navigator.of(context).pop(false);
             },
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               // Konfirmasi untuk menghapus, kembali dengan nilai true
               Navigator.of(context).pop(true);
             },
-            child: Text('Delete'),
+            child: const Text('Delete'),
           ),
         ],
       ),
@@ -183,11 +183,11 @@ class _CustomerServiceState extends State<CustomerService> {
         await DataService.deleteDatas(datas.idCustomerService);
         // Refresh data setelah berhasil menghapus
         setState(() {
-          _CustomerService = DataService.fetchIssue();
+          _CustomerService = DataService.fetchCustomerService();
         });
         // Tampilkan snackbar atau pesan berhasil dihapus
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Data deleted successfully'),
           ),
         );

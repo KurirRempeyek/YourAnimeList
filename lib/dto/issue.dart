@@ -15,9 +15,9 @@ class Issue {
     required this.titleIssues,
     required this.descriptionIssues,
     required this.rating,
-    required this.imageUrl,
-    required this.createdAt,
-    required this.updatedAt,
+    this.imageUrl,
+    this.createdAt,
+    this.updatedAt,
     required this.deletedAt,
   });
 
