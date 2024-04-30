@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:prototyping/components/bottom_up_transition.dart';
 import 'package:prototyping/dto/issue.dart';
 import 'package:prototyping/endpoints/endpoints.dart';
-//import 'package:prototyping/edit_cs.dart';
+import 'package:prototyping/edit_cs.dart';
 import 'package:prototyping/form_customerservice.dart';
 import 'package:prototyping/services/data_services.dart';
 
@@ -114,16 +114,15 @@ class _CustomerServiceState extends State<IssueListScreen> {
                           },
                           icon: const Icon(Icons.delete),
                         ),
-                        // IconButton(
-                        //   onPressed: () {
-                        //     Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //             builder: (context) =>
-                        //                 EditScreen(object: item)));
-                        //   },
-                        //   icon: Icon(Icons.edit),
-                        // ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditCS(edit: item)));
+                          },
+                          icon: Icon(Icons.edit),
+                        ),
                       ],
                     )
                   ]),
