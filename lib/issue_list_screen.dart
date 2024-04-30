@@ -65,24 +65,33 @@ class _CustomerServiceState extends State<IssueListScreen> {
                         )
                       : null,
                   subtitle: Column(children: [
-                    Text('Title : ${item.titleIssues}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: const Color.fromARGB(255, 36, 31, 31),
-                          fontWeight: FontWeight.normal,
-                        )),
-                    Text('Deskripsi : ${item.descriptionIssues}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: const Color.fromARGB(255, 36, 31, 31),
-                          fontWeight: FontWeight.normal,
-                        )),
                     Text('NIM : ${item.nim}',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
-                          color: const Color.fromARGB(255, 36, 31, 31),
-                          fontWeight: FontWeight.normal,
+                          color: Colors.grey.shade900,
+                          fontWeight: FontWeight.bold,
                         )),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text('Title : ${item.titleIssues}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey.shade900,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text('Deskripsi : ${item.descriptionIssues}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey.shade900,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     RatingBar(
                       minRating: 1,
                       maxRating: 5,
@@ -105,8 +114,23 @@ class _CustomerServiceState extends State<IssueListScreen> {
                       ),
                       onRatingUpdate: (double ratings) {},
                     ),
+                    const SizedBox(height: 10),
+                    Text("Create: ${item.createdAt}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey.shade900,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    const SizedBox(height: 10),
+                    Text("Update: ${item.updatedAt}",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey.shade900,
+                          fontWeight: FontWeight.bold,
+                        )),
                     const Divider(),
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           onPressed: () {
@@ -121,7 +145,7 @@ class _CustomerServiceState extends State<IssueListScreen> {
                                 MaterialPageRoute(
                                     builder: (context) => EditCS(edit: item)));
                           },
-                          icon: Icon(Icons.edit),
+                          icon: const Icon(Icons.edit),
                         ),
                       ],
                     )
@@ -174,12 +198,11 @@ class _CustomerServiceState extends State<IssueListScreen> {
         ],
       ),
     );
-
     // Jika pengguna mengonfirmasi penghapusan, lanjutkan penghapusan
     if (confirmed) {
       try {
         // Memanggil metode deleteDatas untuk menghapus data dengan ID tertentu
-        await DataService.deleteDatas(datas.idCustomerService);
+        await DataService.deleteIssue(datas.idCustomerService);
         // Refresh data setelah berhasil menghapus
         setState(() {
           _CustomerService = DataService.fetchCustomerService();

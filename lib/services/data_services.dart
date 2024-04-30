@@ -92,11 +92,4 @@ class DataService {
     await http.delete(Uri.parse('${Endpoints.issue}/$id'),
         headers: {'Content-type': 'aplication/json'});
   }
-
-  static Future<void> updateIssue(String id, String title, String body) async {
-    Map<String, String> data = {"id": id, "title": title, "body": body};
-    String jsonData = jsonEncode(data);
-    await http.put(Uri.parse('${Endpoints.issue}/$id'),
-        body: jsonData, headers: {'Content-type': 'application/json'});
-  }
 }

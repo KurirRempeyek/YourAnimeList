@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,9 +16,6 @@ class CSForm extends StatefulWidget {
 class _CSFormState extends State<CSForm> {
   final _titleController = TextEditingController();
   String _title = "";
-
-  final _ratingController = TextEditingController();
-  int _rating = 0;
 
   final _descriptionController = TextEditingController();
   String _description = "";
@@ -80,7 +78,6 @@ class _CSFormState extends State<CSForm> {
   @override
   void dispose() {
     _titleController.dispose();
-    _ratingController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -88,7 +85,13 @@ class _CSFormState extends State<CSForm> {
   saveData() {
     debugPrint(_title);
     debugPrint(_description);
-    debugPrint(_rating as String?);
+  }
+
+  double rating = 0;
+  void ratingUpdate(double userRating) {
+    setState(() {
+      rating = userRating;
+    });
   }
 
   Future<void> _postDataWithImage(BuildContext context) async {
@@ -99,7 +102,7 @@ class _CSFormState extends State<CSForm> {
     var request = MultipartRequest('POST', Uri.parse(Endpoints.issue));
     request.fields['title_issues'] = _titleController.text;
     request.fields['description_issues'] = _descriptionController.text;
-    request.fields['rating'] = _ratingController.text.toString();
+    request.fields['rating'] = rating.toString();
 
     var multipartFile = await MultipartFile.fromPath(
       'image',
@@ -163,10 +166,11 @@ class _CSFormState extends State<CSForm> {
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(60),
-                        topRight: Radius.circular(60))),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(60),
+                      topRight: Radius.circular(60)),
+                ),
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -187,31 +191,6 @@ class _CSFormState extends State<CSForm> {
                             ]),
                         child: Column(
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                _showPicker(context: context);
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: Colors.grey.shade200))),
-                                width: double.infinity,
-                                height: 150,
-                                child: galleryFile == null
-                                    ? Center(
-                                        child: Text('Put Image Here',
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              color: const Color.fromARGB(
-                                                  255, 124, 122, 122),
-                                              fontWeight: FontWeight.w500,
-                                            )))
-                                    : Center(
-                                        child: Image.file(galleryFile!),
-                                      ),
-                              ),
-                            ),
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
@@ -238,26 +217,6 @@ class _CSFormState extends State<CSForm> {
                                       bottom: BorderSide(
                                           color: Colors.grey.shade200))),
                               child: TextField(
-                                controller: _ratingController,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    hintText: "Rating (1-5)",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _rating = int.tryParse(value) ?? 0;
-                                  });
-                                },
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.shade200))),
-                              child: TextField(
                                 controller: _descriptionController,
                                 decoration: const InputDecoration(
                                     hintText: "Issue Description",
@@ -268,6 +227,59 @@ class _CSFormState extends State<CSForm> {
                                     _description = value;
                                   });
                                 },
+                              ),
+                            ),
+                            Text(
+                              'Rating',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            RatingBar(
+                              minRating: 1,
+                              maxRating: 5,
+                              allowHalfRating: false,
+                              ratingWidget: RatingWidget(
+                                full: const Icon(
+                                  Icons.star,
+                                  color: Colors.yellow,
+                                ),
+                                half: const Icon(
+                                  Icons.star_half,
+                                  color: Colors.yellow,
+                                ),
+                                empty: const Icon(
+                                  Icons.star_border,
+                                  color: Colors.yellow,
+                                ),
+                              ),
+                              onRatingUpdate: ratingUpdate,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _showPicker(context: context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.grey.shade200))),
+                                width: double.infinity,
+                                height: 150,
+                                child: galleryFile == null
+                                    ? Center(
+                                        child: Text('Put Image Here',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              color: const Color.fromARGB(
+                                                  255, 124, 122, 122),
+                                              fontWeight: FontWeight.w500,
+                                            )))
+                                    : Center(
+                                        child: Image.file(galleryFile!),
+                                      ),
                               ),
                             ),
                             DropdownButtonFormField<String>(

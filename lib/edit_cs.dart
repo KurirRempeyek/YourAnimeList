@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +11,6 @@ import 'package:prototyping/issue_list_screen.dart';
 
 class EditCS extends StatefulWidget {
   const EditCS({Key? key, required this.edit}) : super(key: key);
-
   final Issue edit;
 
   @override
@@ -18,17 +19,10 @@ class EditCS extends StatefulWidget {
 
 class _EditCSState extends State<EditCS> {
   final _titleController = TextEditingController();
-  String _title = "";
-  final _ratingController = TextEditingController();
-  int _rating = 0;
   final _descriptionController = TextEditingController();
-  String _description = "";
 
   File? galleryFile;
   final picker = ImagePicker();
-
-  String? _selectedDivision;
-  String? _selectedPriority;
 
   @override
   void initState() {
@@ -79,8 +73,8 @@ class _EditCSState extends State<EditCS> {
         if (xfilePick != null) {
           galleryFile = File(pickedFile!.path);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Nothing is Selected')));
+          ScaffoldMessenger.of(context).showSnackBar(// is this context <<<
+              const SnackBar(content: Text('Nothing is selected')));
         }
       },
     );
@@ -88,38 +82,17 @@ class _EditCSState extends State<EditCS> {
 
   Future<void> _updateDataWithImage(BuildContext context) async {
     if (galleryFile == null) {
-      return; // Kalau ga ada image
-    }
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _ratingController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
-  double rating = 0;
-  void ratingUpdate(double userRating) {
-    setState(() {
-      rating = userRating;
-    });
-  }
-
-  Future<void> _updateIssueWithImage(BuildContext context) async {
-    if (galleryFile == null) {
-      return;
+      return; // Handle case where no image is selected
     }
 
     var request = MultipartRequest('POST',
         Uri.parse('${Endpoints.issue}/${widget.edit.idCustomerService}'));
     request.fields['title_issues'] = _titleController.text;
     request.fields['description_issues'] = _descriptionController.text;
-    request.fields['rating'] = rating.toDouble() as String;
+    request.fields['rating'] = rating.toString();
     if (galleryFile != null) {
       var multipartFile = await MultipartFile.fromPath(
-        'image',
+        'image', // ganti field sesui in
         galleryFile!.path,
       );
       request.files.add(multipartFile);
@@ -128,12 +101,26 @@ class _EditCSState extends State<EditCS> {
     request.send().then((response) {
       // Handle response (success or error)
       if (response.statusCode == 200) {
-        debugPrint('Issue edited successfully!');
+        debugPrint('Data and image posted successfully!');
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const IssueListScreen()));
       } else {
         debugPrint('Error posting data: ${response.statusCode}');
       }
+    });
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose(); // Dispose of controller when widget is removed
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  double rating = 0;
+  void ratingUpdate(double userRating) {
+    setState(() {
+      rating = userRating;
     });
   }
 
@@ -155,10 +142,10 @@ class _EditCSState extends State<EditCS> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "Edit Report",
+                    "Edit Report Issue",
                     style: GoogleFonts.poppins(
                       fontSize: 32,
                       color: Colors.white,
@@ -185,167 +172,127 @@ class _EditCSState extends State<EditCS> {
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(60),
-                        topRight: Radius.circular(60))),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(60),
+                      topRight: Radius.circular(60)),
+                ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        Container(
+                          decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: const [
                               BoxShadow(
-                                  color: Color.fromRGBO(225, 95, 27, .3),
-                                  blurRadius: 20,
+                                  color: Color.fromARGB(255, 82, 80, 80),
+                                  blurRadius: 10,
                                   offset: Offset(0, 10))
-                            ]),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                _showPicker(context: context);
-                              },
-                              child: Container(
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                     border: Border(
                                         bottom: BorderSide(
                                             color: Colors.grey.shade200))),
-                                width: double.infinity,
-                                height: 150,
-                                child: galleryFile == null
-                                    ? Center(
-                                        child: Image.network(
-                                          width: 200,
-                                          Uri.parse(
-                                                  '${Endpoints.baseURLLive}/public/${widget.edit.imageUrl!}')
-                                              .toString(),
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  const Icon(Icons.error),
-                                        ),
-                                      )
-                                    : Center(
-                                        child: Image.file(galleryFile!),
-                                      ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.shade200))),
-                              child: TextField(
+                                child: TextField(
                                   controller: _titleController,
+                                  maxLength: 50,
                                   decoration: const InputDecoration(
                                       hintText: "Title of Issue",
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _title = value;
-                                    });
-                                  }),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.shade200))),
-                              child: TextField(
-                                controller: _ratingController,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    hintText: "Rating (1-5)",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _rating = int.tryParse(value) ?? 0;
-                                  });
+                                ),
+                              ),
+                              Text(
+                                'Rating',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.grey.shade200))),
+                                child: TextField(
+                                  controller: _descriptionController,
+                                  maxLength: 150,
+                                  maxLines: 4,
+                                  decoration: const InputDecoration(
+                                      hintText: "Issue Description",
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      border: InputBorder.none),
+                                ),
+                              ),
+                              RatingBar(
+                                minRating: 1,
+                                maxRating: 5,
+                                allowHalfRating: false,
+                                ratingWidget: RatingWidget(
+                                  full: const Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                  ),
+                                  half: const Icon(
+                                    Icons.star_half,
+                                    color: Colors.yellow,
+                                  ),
+                                  empty: const Icon(
+                                    Icons.star_border,
+                                    color: Colors.yellow,
+                                  ),
+                                ),
+                                onRatingUpdate: ratingUpdate,
+                                initialRating: widget.edit.rating.toDouble(),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  _showPicker(context: context);
                                 },
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
                                       bottom: BorderSide(
-                                          color: Colors.grey.shade200))),
-                              child: TextField(
-                                controller: _descriptionController,
-                                decoration: const InputDecoration(
-                                    hintText: "Issue Description",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _description = value;
-                                  });
-                                },
+                                          color: Colors.grey.shade200),
+                                    ),
+                                  ),
+                                  width:
+                                      double.infinity, // Fill available space
+                                  height: 150, // Adjust height as needed
+                                  // color: Colors.grey[200], // Placeholder color
+                                  child: galleryFile == null
+                                      ? Center(
+                                          child: Image.network(
+                                            width: 200,
+                                            Uri.parse(
+                                                    '${Endpoints.baseURLLive}/public/${widget.edit.imageUrl!}')
+                                                .toString(),
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    const Icon(Icons.error),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Image.file(galleryFile!),
+                                        ),
+                                ),
                               ),
-                            ),
-                            DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(
-                                hintText: 'Select Division',
-                                hintStyle: TextStyle(color: Colors.grey),
-                                border: InputBorder.none,
-                              ),
-                              value: _selectedDivision,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  _selectedDivision = newValue!;
-                                });
-                              },
-                              items: <String>[
-                                'IT',
-                                'Helpdesk',
-                                'Billing'
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                            DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(
-                                hintText: 'Select Priority',
-                                hintStyle: TextStyle(color: Colors.grey),
-                                border: InputBorder.none,
-                              ),
-                              value: _selectedPriority,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  _selectedPriority = newValue!;
-                                });
-                              },
-                              items: <String>[
-                                'High',
-                                'Medium',
-                                'Low'
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    )),
               ),
             ),
           ],
