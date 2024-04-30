@@ -211,6 +211,9 @@ class _EditCSState extends State<EditCS> {
                                       border: InputBorder.none),
                                 ),
                               ),
+                              const SizedBox(
+                                height: 20,
+                              ),
                               Text(
                                 'Rating',
                                 style: GoogleFonts.poppins(
@@ -235,6 +238,9 @@ class _EditCSState extends State<EditCS> {
                                       border: InputBorder.none),
                                 ),
                               ),
+                              const SizedBox(
+                                height: 20,
+                              ),
                               RatingBar(
                                 minRating: 1,
                                 maxRating: 5,
@@ -255,6 +261,9 @@ class _EditCSState extends State<EditCS> {
                                 ),
                                 onRatingUpdate: ratingUpdate,
                                 initialRating: widget.edit.rating.toDouble(),
+                              ),
+                              const SizedBox(
+                                height: 20,
                               ),
                               GestureDetector(
                                 onTap: () {

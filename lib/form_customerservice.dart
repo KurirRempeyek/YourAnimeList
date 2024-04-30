@@ -79,6 +79,7 @@ class _CSFormState extends State<CSForm> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+
     super.dispose();
   }
 
@@ -228,6 +229,9 @@ class _CSFormState extends State<CSForm> {
                                   });
                                 },
                               ),
+                            ),
+                            const SizedBox(
+                              height: 20,
                             ),
                             Text(
                               'Rating',
