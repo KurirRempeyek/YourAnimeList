@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:prototyping/anime_screen.dart';
 import 'package:prototyping/animedesc.dart/hanakokun.dart';
@@ -6,6 +7,8 @@ import 'package:prototyping/animedesc.dart/hataraku.dart';
 import 'package:prototyping/animedesc.dart/lovely.dart';
 import 'package:prototyping/animedesc.dart/mahoutsukai.dart';
 import 'package:prototyping/animedesc.dart/ponyo.dart';
+import 'package:prototyping/counter_screen.dart';
+import 'package:prototyping/cubit/counter_cubit.dart';
 import 'package:prototyping/datas_screen.dart';
 import 'package:prototyping/form_screen.dart';
 import 'package:prototyping/homepage.dart';
@@ -13,6 +16,7 @@ import 'package:prototyping/discover.dart';
 import 'package:prototyping/issue_list_screen.dart';
 import 'package:prototyping/news_screen.dart';
 import 'package:prototyping/animedesc.dart/aikatsu.dart';
+import 'package:prototyping/welcome_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,24 +27,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.lightBlue,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CounterCubit>(create: (context) => CounterCubit())
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.lightBlue,
+        ),
+        home: const MyHomePage(title: 'Home Screen'),
+        routes: {
+          '/aikatsu': (context) => const Aikatsu(),
+          '/hanakokun': (context) => const HanakoKun(),
+          '/hataraku': (context) => const HatarakuSaibou(),
+          '/lovely': (context) => const LovelyComplex(),
+          '/mahoutsukai': (context) => const Mahoutsukai(),
+          '/ponyo': (context) => const Ponyo(),
+          '/form-screen': (context) => const FormScreen(),
+          '/datas-screen': (context) => const DatasScreen(),
+          '/customerservice-screen': (context) => const IssueListScreen(),
+          '/counter-screen': (context) => const CounterScreen(),
+          '/welcome-screen': (context) => const WelcomeScreen(),
+        },
       ),
-      home: const MyHomePage(title: 'Home Screen'),
-      routes: {
-        '/aikatsu': (context) => const Aikatsu(),
-        '/hanakokun': (context) => const HanakoKun(),
-        '/hataraku': (context) => const HatarakuSaibou(),
-        '/lovely': (context) => const LovelyComplex(),
-        '/mahoutsukai': (context) => const Mahoutsukai(),
-        '/ponyo': (context) => const Ponyo(),
-        '/form-screen': (context) => const FormScreen(),
-        '/datas-screen': (context) => const DatasScreen(),
-        '/customerservice-screen': (context) => const IssueListScreen(),
-      },
     );
   }
 }
@@ -64,6 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
     const AnimeScreen(),
     const DatasScreen(),
     const IssueListScreen(),
+    const CounterScreen(),
+    const WelcomeScreen(),
   ];
 
   final List<String> _appBarTitles = const [
@@ -73,6 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
     'MyList',
     'Datas Screen',
     'Customer Service',
+    'Counter Screen',
+    'Welcome Screen',
   ]; // List of titles corresponding to each screen
 
   void _onItemTapped(int index) {
@@ -163,6 +178,26 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 // Update the state of the app
                 _onItemTapped(5);
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Counter Screen'),
+              selected: _selectedIndex == 1,
+              onTap: () {
+                // Update the state of the app
+                _onItemTapped(6);
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Welcome Screen'),
+              selected: _selectedIndex == 1,
+              onTap: () {
+                // Update the state of the app
+                _onItemTapped(7);
                 // Then close the drawer
                 Navigator.pop(context);
               },

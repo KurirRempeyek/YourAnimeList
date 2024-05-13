@@ -47,6 +47,9 @@ dependencies:
   google_fonts: ^6.2.1
   image_picker: ^1.0.8
   flutter_rating_bar: ^4.0.1
+  flutter_bloc: ^8.1.5
+  meta: ^1.11.0
+  bloc: ^8.1.4
 
 
 dev_dependencies:
