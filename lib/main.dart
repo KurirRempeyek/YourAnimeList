@@ -7,7 +7,9 @@ import 'package:prototyping/animedesc.dart/hataraku.dart';
 import 'package:prototyping/animedesc.dart/lovely.dart';
 import 'package:prototyping/animedesc.dart/mahoutsukai.dart';
 import 'package:prototyping/animedesc.dart/ponyo.dart';
+import 'package:prototyping/balance_screen.dart';
 import 'package:prototyping/counter_screen.dart';
+import 'package:prototyping/cubit/balance/balance_cubit.dart';
 import 'package:prototyping/cubit/counter_cubit.dart';
 import 'package:prototyping/datas_screen.dart';
 import 'package:prototyping/form_screen.dart';
@@ -16,6 +18,7 @@ import 'package:prototyping/discover.dart';
 import 'package:prototyping/issue_list_screen.dart';
 import 'package:prototyping/news_screen.dart';
 import 'package:prototyping/animedesc.dart/aikatsu.dart';
+import 'package:prototyping/spending_screen.dart';
 import 'package:prototyping/welcome_screen.dart';
 
 void main() {
@@ -29,7 +32,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CounterCubit>(create: (context) => CounterCubit())
+        BlocProvider<CounterCubit>(create: (context) => CounterCubit()),
+        BlocProvider<BalanceCubit>(create: (context) => BalanceCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -50,6 +54,8 @@ class MyApp extends StatelessWidget {
           '/customerservice-screen': (context) => const IssueListScreen(),
           '/counter-screen': (context) => const CounterScreen(),
           '/welcome-screen': (context) => const WelcomeScreen(),
+          '/balance-screen': (context) => const BalanceScreen(),
+          '/spending-screen': (context) => const SpendingScreen(),
         },
       ),
     );
@@ -77,6 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
     const IssueListScreen(),
     const CounterScreen(),
     const WelcomeScreen(),
+    const BalanceScreen(),
+    const SpendingScreen(),
   ];
 
   final List<String> _appBarTitles = const [
@@ -88,6 +96,8 @@ class _MyHomePageState extends State<MyHomePage> {
     'Customer Service',
     'Counter Screen',
     'Welcome Screen',
+    'Balance',
+    'Spending',
   ]; // List of titles corresponding to each screen
 
   void _onItemTapped(int index) {
@@ -198,6 +208,26 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 // Update the state of the app
                 _onItemTapped(7);
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Balance'),
+              selected: _selectedIndex == 1,
+              onTap: () {
+                // Update the state of the app
+                _onItemTapped(8);
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Spending'),
+              selected: _selectedIndex == 1,
+              onTap: () {
+                // Update the state of the app
+                _onItemTapped(9);
                 // Then close the drawer
                 Navigator.pop(context);
               },

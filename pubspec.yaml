@@ -50,6 +50,7 @@ dependencies:
   flutter_bloc: ^8.1.5
   meta: ^1.11.0
   bloc: ^8.1.4
+  intl: ^0.19.0
 
 
 dev_dependencies:
