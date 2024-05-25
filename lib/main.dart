@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:prototyping/login_page.dart';
-//import 'package:prototyping/screens/anime_screen.dart';
+import 'package:prototyping/screens/anime_screen.dart';
 import 'package:prototyping/animedesc.dart/hanakokun.dart';
 import 'package:prototyping/animedesc.dart/hataraku.dart';
 import 'package:prototyping/animedesc.dart/lovely.dart';
@@ -42,8 +42,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.lightBlue,
         ),
-        home: const MyHomePage(title: 'Home Screen'),
+        home: LoginPage(),
         routes: {
+          '/home-page': (context) => const MyHomePage(title: 'Home Page'),
           '/aikatsu': (context) => const Aikatsu(),
           '/hanakokun': (context) => const HanakoKun(),
           '/hataraku': (context) => const HatarakuSaibou(),
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const HomePage(),
     const Discover(),
     const NewsScreen(),
-    LoginPage(),
+    const AnimeScreen(),
     const DatasScreen(),
     const IssueListScreen(),
     const CounterScreen(),

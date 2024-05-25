@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:prototyping/components/my_button.dart';
 import 'package:prototyping/components/my_textfield.dart';
 import 'package:prototyping/components/square_tile.dart';
+import 'package:prototyping/homepage.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -63,7 +64,7 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 25),
               //sign in
               MyButton(
-                onTap: signUserIn,
+                onTap: () => const HomePage(),
               ),
               const SizedBox(height: 50),
               Padding(
