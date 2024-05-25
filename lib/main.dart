@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:prototyping/anime_screen.dart';
+import 'package:prototyping/login_page.dart';
+//import 'package:prototyping/screens/anime_screen.dart';
 import 'package:prototyping/animedesc.dart/hanakokun.dart';
 import 'package:prototyping/animedesc.dart/hataraku.dart';
 import 'package:prototyping/animedesc.dart/lovely.dart';
 import 'package:prototyping/animedesc.dart/mahoutsukai.dart';
 import 'package:prototyping/animedesc.dart/ponyo.dart';
-import 'package:prototyping/balance_screen.dart';
-import 'package:prototyping/counter_screen.dart';
+import 'package:prototyping/screens/balance_screen.dart';
+import 'package:prototyping/screens/counter_screen.dart';
 import 'package:prototyping/cubit/balance/balance_cubit.dart';
 import 'package:prototyping/cubit/counter_cubit.dart';
-import 'package:prototyping/datas_screen.dart';
-import 'package:prototyping/form_screen.dart';
+import 'package:prototyping/screens/datas_screen.dart';
+import 'package:prototyping/screens/form_screen.dart';
 import 'package:prototyping/homepage.dart';
 import 'package:prototyping/discover.dart';
-import 'package:prototyping/issue_list_screen.dart';
-import 'package:prototyping/news_screen.dart';
+import 'package:prototyping/screens/issue_list_screen.dart';
+import 'package:prototyping/screens/news_screen.dart';
 import 'package:prototyping/animedesc.dart/aikatsu.dart';
-import 'package:prototyping/spending_screen.dart';
-import 'package:prototyping/welcome_screen.dart';
+import 'package:prototyping/screens/spending_screen.dart';
+import 'package:prototyping/screens/welcome_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const HomePage(),
     const Discover(),
     const NewsScreen(),
-    const AnimeScreen(),
+    LoginPage(),
     const DatasScreen(),
     const IssueListScreen(),
     const CounterScreen(),

@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prototyping/dto/datas.dart';
 import 'package:prototyping/endpoints/endpoints.dart';
-import 'package:prototyping/datas_screen.dart';
+import 'package:prototyping/screens/datas_screen.dart';
 
 class EditScreen extends StatefulWidget {
   const EditScreen({Key? key, required this.object}) : super(key: key);

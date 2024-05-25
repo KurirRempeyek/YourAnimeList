@@ -7,7 +7,7 @@ import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prototyping/dto/issue.dart';
 import 'package:prototyping/endpoints/endpoints.dart';
-import 'package:prototyping/issue_list_screen.dart';
+import 'package:prototyping/screens/issue_list_screen.dart';
 
 class EditCS extends StatefulWidget {
   const EditCS({Key? key, required this.edit}) : super(key: key);

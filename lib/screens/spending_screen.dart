@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:prototyping/cubit/balance/balance_cubit.dart';
 
 import 'package:prototyping/dto/spendings.dart';
-import 'package:prototyping/spending_form_screen.dart';
+import 'package:prototyping/screens/spending_form_screen.dart';
 import 'package:prototyping/services/data_services.dart';
 import 'package:prototyping/utils/constants.dart';
 

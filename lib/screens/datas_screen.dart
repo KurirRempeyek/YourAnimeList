@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:prototyping/components/bottom_up_transition.dart';
 import 'package:prototyping/dto/datas.dart';
 import 'package:prototyping/endpoints/endpoints.dart';
-import 'package:prototyping/form_screen.dart';
+import 'package:prototyping/screens/form_screen.dart';
 import 'package:prototyping/services/data_services.dart';
-import 'package:prototyping/update_delete_datas.dart';
+import 'package:prototyping/form/update_delete_datas.dart';
 
 class DatasScreen extends StatefulWidget {
   const DatasScreen({Key? key}) : super(key: key);

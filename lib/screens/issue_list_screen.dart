@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:prototyping/components/bottom_up_transition.dart';
 import 'package:prototyping/dto/issue.dart';
 import 'package:prototyping/endpoints/endpoints.dart';
-import 'package:prototyping/edit_cs.dart';
-import 'package:prototyping/form_customerservice.dart';
+import 'package:prototyping/form/edit_cs.dart';
+import 'package:prototyping/screens/form_customerservice.dart';
 import 'package:prototyping/services/data_services.dart';
 
 class IssueListScreen extends StatefulWidget {
