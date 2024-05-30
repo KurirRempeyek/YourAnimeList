@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:prototyping/components/auth_wrapper.dart';
+import 'package:prototyping/cubit/auth/auth_cubit.dart';
 import 'package:prototyping/login_page.dart';
 import 'package:prototyping/screens/anime_screen.dart';
 import 'package:prototyping/animedesc.dart/hanakokun.dart';
@@ -21,6 +23,9 @@ import 'package:prototyping/screens/news_screen.dart';
 import 'package:prototyping/animedesc.dart/aikatsu.dart';
 import 'package:prototyping/screens/spending_screen.dart';
 import 'package:prototyping/screens/welcome_screen.dart';
+import 'package:prototyping/services/data_services.dart';
+import 'package:prototyping/utils/constants.dart';
+import 'package:prototyping/utils/secure_storage_util.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +40,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<CounterCubit>(create: (context) => CounterCubit()),
         BlocProvider<BalanceCubit>(create: (context) => BalanceCubit()),
+        BlocProvider<AuthCubit>(create: (context) => AuthCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -44,7 +50,9 @@ class MyApp extends StatelessWidget {
         ),
         home: LoginPage(),
         routes: {
-          '/home-page': (context) => const MyHomePage(title: 'Home Page'),
+          '/home-page': (context) =>
+              const AuthWrapper(child: MyHomePage(title: 'Home Page')),
+          '/login-page': (context) => const LoginPage(),
           '/aikatsu': (context) => const Aikatsu(),
           '/hanakokun': (context) => const HanakoKun(),
           '/hataraku': (context) => const HatarakuSaibou(),
@@ -56,8 +64,10 @@ class MyApp extends StatelessWidget {
           '/customerservice-screen': (context) => const IssueListScreen(),
           '/counter-screen': (context) => const CounterScreen(),
           '/welcome-screen': (context) => const WelcomeScreen(),
-          '/balance-screen': (context) => const BalanceScreen(),
-          '/spending-screen': (context) => const SpendingScreen(),
+          '/balance-screen': (context) =>
+              const AuthWrapper(child: BalanceScreen()),
+          '/spending-screen': (context) =>
+              const AuthWrapper(child: SpendingScreen()),
         },
       ),
     );
@@ -87,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const WelcomeScreen(),
     const BalanceScreen(),
     const SpendingScreen(),
+    const LoginPage(),
   ];
 
   final List<String> _appBarTitles = const [
@@ -100,6 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'Welcome Screen',
     'Balance',
     'Spending',
+    'Login',
   ]; // List of titles corresponding to each screen
 
   void _onItemTapped(int index) {
@@ -113,6 +125,15 @@ class _MyHomePageState extends State<MyHomePage> {
       Navigator.pop(context); // Close the drawer first
     }
     Navigator.pushNamed(context, routeName);
+  }
+
+  Future<void> doLogout(context) async {
+    debugPrint("need logout");
+    final response = await DataService.logoutData();
+    if (response.statusCode == 200) {
+      await SecureStorageUtil.storage.delete(key: tokenStoreName);
+      Navigator.pushReplacementNamed(context, "/login-page");
+    }
   }
 
   @override
@@ -232,6 +253,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 _onItemTapped(9);
                 // Then close the drawer
                 Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Logout'),
+              onTap: () {
+                doLogout(context);
               },
             ),
           ],

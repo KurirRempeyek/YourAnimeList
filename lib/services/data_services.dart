@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:prototyping/dto/balances.dart';
 import 'package:prototyping/dto/datas.dart';
@@ -6,6 +7,8 @@ import 'dart:convert';
 import 'package:prototyping/dto/news.dart';
 import 'package:prototyping/dto/spendings.dart';
 import 'package:prototyping/endpoints/endpoints.dart';
+import 'package:prototyping/utils/constants.dart';
+import 'package:prototyping/utils/secure_storage_util.dart';
 
 class DataService {
   static Future<List<News>> fetchNews() async {
@@ -129,6 +132,38 @@ class DataService {
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(data),
+    );
+
+    return response;
+  }
+
+  //post login with email and password
+  static Future<http.Response> sendLoginData(
+      String email, String password) async {
+    final url = Uri.parse(Endpoints.login);
+    final data = {'email': email, 'password': password};
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(data),
+    );
+
+    return response;
+  }
+
+  static Future<http.Response> logoutData() async {
+    final url = Uri.parse(Endpoints.logout);
+    final String? accessToken =
+        await SecureStorageUtil.storage.read(key: tokenStoreName);
+    debugPrint("logout with $accessToken");
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
     );
 
     return response;

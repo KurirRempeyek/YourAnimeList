@@ -6,3 +6,4 @@ const primaryColor = Color(0xFF48c9e2);
 
 final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
 final DateFormat formatDate = DateFormat('yyyy-MM-dd H:mm');
+const tokenStoreName = "access_token";

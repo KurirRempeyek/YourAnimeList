@@ -11,4 +11,6 @@ class Endpoints {
   static const String issue = "$baseURLLive/api/customer-service/$nim";
   static const String balance = "$baseURLLive/api/balance/$nim";
   static const String spending = "$baseURLLive/api/spending/$nim";
+  static const String login = "$baseURLLive/api/auth/login";
+  static const String logout = "$baseURLLive/api/auth/logout";
 }
