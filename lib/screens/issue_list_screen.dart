@@ -163,8 +163,6 @@ class _CustomerServiceState extends State<IssueListScreen> {
         backgroundColor: const Color.fromARGB(255, 103, 80, 164),
         tooltip: 'Increment',
         onPressed: () {
-          // Navigator.pushNamed(context, '/form-screen');
-          // BottomUpRoute(page: const FormScreen());
           Navigator.push(context, BottomUpRoute(page: const CSForm()));
         },
         child: const Icon(Icons.add, color: Colors.white, size: 28),
